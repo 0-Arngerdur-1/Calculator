@@ -10,7 +10,12 @@ class Calculator {
     this.operation = undefined;
   }
 
-  delete() {}
+  delete() {
+    // let arr = this.currentOperandTextElement.innerText.split('');
+    // arr.pop();
+    // this.currentOperand = arr.join('');
+    this.currentOperand = this.currentOperand.toString().slice(0, -1);
+  }
 
   appendNumber(number) {
     if (number === '.' && this.currentOperand.includes('.')) return;
@@ -32,11 +37,36 @@ class Calculator {
     const prev = parseFloat(this.previusOperand);
     const curr = parseFloat(this.currentOperand);
     if (isNaN(prev) || isNaN(curr)) return;
+    switch (this.operation) {
+      case '+':
+        computation = prev + curr;
+        break;
+      case '-':
+        computation = prev - curr;
+        break;
+      case '*':
+        computation = prev * curr;
+        break;
+
+      case '÷':
+        computation = prev / curr;
+        break;
+      default:
+        return;
+    }
+    this.currentOperand = computation;
+    this.operation = undefined;
+    this.previusOperand = '';
   }
 
   updateDisplay() {
     this.currentOperandTextElement.innerText = this.currentOperand;
-    this.previusOperandTextElement.innerText = this.previusOperand;
+    if (this.operation !== null) {
+      this.previusOperandTextElement.innerText = `${this.previusOperand} ${this.operation}`;
+    }
+    if (this.previusOperandTextElement.innerText === 'undefined') {
+      this.previusOperandTextElement.innerText = this.previusOperand;
+    }
   }
 }
 
@@ -73,5 +103,15 @@ operationButtons.forEach((button) => {
 
 equalButton.addEventListener('click', (button) => {
   calculator.compute();
+  calculator.updateDisplay();
+});
+
+allClearButton.addEventListener('click', (button) => {
+  calculator.clear();
+  calculator.updateDisplay();
+});
+
+deleteButton.addEventListener('click', (button) => {
+  calculator.delete();
   calculator.updateDisplay();
 });
